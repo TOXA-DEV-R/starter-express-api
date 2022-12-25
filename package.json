@@ -2,7 +2,21 @@
   "name": "starter-express-api",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "git@github.com:TOXA-DEV-R/starter-express-api.git",
-  "author": "TOXIR_DEV <TOXA-DEV-R>",
-  "license": "MIT"
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "@types/node": "^18.11.17",
+    "express": "^4.18.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cyclic-software/starter-express-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cyclic-software/starter-express-api/issues"
+  },
+  "homepage": "https://github.com/cyclic-software/starter-express-api#readme"
 }
