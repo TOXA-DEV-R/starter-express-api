@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const logging_1 = require("../logging");
 exports.default = (req, res, next) => {
     try {
         const token = req.header("token-x-auth");
@@ -25,6 +26,7 @@ exports.default = (req, res, next) => {
     }
     catch (err) {
         console.log(err);
+        logging_1.logging.error(err);
         res.status(404).send("Failed");
     }
 };

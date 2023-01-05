@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/index.css" />
+  <title>Document</title>
+</head>
+
+<body>
+  <form id="form" style="display: flex; flex-direction: column; width: 300px">
+    <input style="margin-top: 5px" type="text" name="name" placeholder="name" />
+    <input style="margin-top: 5px" type="text" name="surname" placeholder="surname" />
+    <input style="margin-top: 5px" type="text" name="age" placeholder="age" />
+    <input style="margin-top: 5px" type="text" name="email" placeholder="email" />
+    <input style="margin-top: 5px" type="text" name="password" placeholder="password" />
+    <p id="error" style="color: white;"></p>
+    <button type="submit" style="margin-top: 10px;">Submit</button>
+  </form>
+
+  <form id="auth" style="margin-top: 35px;">
+    <input style="margin-top: 5px" type="text" name="email" placeholder="email" />
+    <input style="margin-top: 5px" type="text" name="password" placeholder="password" />
+    <p id="error" style="color: white;"></p>
+    <button type="submit" style="margin-top: 10px;">Submit</button>
+  </form>
+
+  <ul id="user-list"></ul>
+
+  <button id="get-users" style="margin-top: 40px;">get users</button>
+
+  <script src="/ejs.min.js"></script>
+  <script>
+    document.getElementById('form').addEventListener("submit", async (e) => {
+      e.preventDefault()
+      const getError = e.target.querySelector('#error');
+
+      getError.innerHTML = '';
+      getError.style.marginTop = '';
+
+      const getinputs = e.target.querySelectorAll('input');
+
+      const getData = {}
+
+      getinputs.forEach((item) => {
+        getData[item.name] = item.value
+      })
+
+      if (!haveValues(getinputs)) {
+        getError.innerHTML = 'Please enter all of values';
+        getError.style.marginTop = '15px';
+        return;
+      }
+
+
+      fetch('http://localhost:8080/users', {
+        method: 'POST',
+        body: JSON.stringify(getData),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(res => {
+        if (!res.ok) {
+          getError.innerHTML = 'Please enter agin';
+          getError.style.marginTop = '15px';
+        } else {
+          cleanInputs(getinputs)
+        }
+
+      }).catch(err => {
+        getError.innerHTML = 'Please enter agin';
+        getError.style.marginTop = '15px';
+      })
+    })
+
+    function cleanInputs(arr) {
+      arr.forEach((item) => {
+        item.value = ''
+      })
+    }
+
+    function haveValues(arr) {
+      return [...arr].every((item) => item.value.length > 0)
+    }
+
+    document.getElementById('auth').addEventListener("submit", async (e) => {
+      e.preventDefault()
+      const getError = e.target.querySelector('#error');
+
+      getError.innerHTML = '';
+      getError.style.marginTop = '';
+
+      const getinputs = e.target.querySelectorAll('input');
+
+      const getData = {}
+
+      getinputs.forEach((item) => {
+        getData[item.name] = item.value
+      })
+
+      if (!haveValues(getinputs)) {
+        getError.innerHTML = 'Please enter all of values';
+        getError.style.marginTop = '15px';
+        return;
+      }
+
+
+      fetch('http://localhost:8080/auth', {
+        method: 'POST',
+        body: JSON.stringify(getData),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(res => {
+        if (!res.ok) {
+          getError.innerHTML = 'Please enter agin';
+          getError.style.marginTop = '15px';
+        } else {
+          localStorage.setItem('auth', res.headers.get('token-x-auth'))
+          cleanInputs(getinputs)
+        }
+
+      }).catch(err => {
+        console.log(err)
+        getError.innerHTML = 'Please enter agin';
+        getError.style.marginTop = '15px';
+      })
+    })
+
+    document.getElementById('get-users').addEventListener("click", (e) => {
+      let data = [];
+
+      fetch('http://localhost:8080/users', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          "token-x-auth": localStorage.getItem('auth')
+        }
+      }).then(res => res.json()).then(data => {
+        const userList = document.getElementById('user-list');
+
+        let list = '';
+
+        [...data].forEach((item) => {
+          list += `<li><p>${item.name}</p><p>${item.email}</p></li>`;
+        })
+
+        userList.innerHTML = list
+      }).catch(err => {
+        console.log(err)
+      })
+    })
+  </script>
+</body>
+
+</html>

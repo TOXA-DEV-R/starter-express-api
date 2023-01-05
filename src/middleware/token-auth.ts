@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { logging } from "../logging";
 
 export default (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -26,6 +27,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
     next();
   } catch (err) {
     console.log(err);
+    logging.error(err);
     res.status(404).send("Failed");
   }
 };
