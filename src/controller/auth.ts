@@ -25,5 +25,5 @@ export const postAuth = tryCatch(async (req: Request, res: Response) => {
 
   const token = isUser.generateAuthToken(isUser._id.toString());
 
-  res.status(200).header("token-x-auth", token).send("success");
+  res.status(200).send({ token });
 });

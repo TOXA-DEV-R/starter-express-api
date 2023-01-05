@@ -31,5 +31,5 @@ exports.postAuth = (0, try_catch_1.default)((req, res) => __awaiter(void 0, void
         throw { message: "Email or passwod is wrong", status: 400 };
     }
     const token = isUser.generateAuthToken(isUser._id.toString());
-    res.status(200).header("token-x-auth", token).send("success");
+    res.status(200).send({ token });
 }));
